@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#173f35">
+  <meta name="description" content="Use what you have. Waste less. FreshLoop is a private, local-first food inventory and shopping planner.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <title>FreshLoop — food, thoughtfully used</title>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div id="offlineBanner" class="offline" hidden>You're offline. Your changes stay on this device.</div>
+
+  <section id="onboarding" class="onboarding" hidden aria-labelledby="welcomeTitle">
+    <div class="onboarding-art" aria-hidden="true"><span>F</span><p>Good food deserves<br>another day.</p></div>
+    <div class="onboarding-panel">
+      <div class="brand"><span class="brand-mark">F</span><span>FreshLoop</span></div>
+      <div class="step-label">WELCOME · LOCAL MODE</div>
+      <h1 id="welcomeTitle">A calmer way to use what you have.</h1>
+      <p class="lede">FreshLoop keeps your household's food visible, helps you use items sooner, and makes shopping more intentional.</p>
+      <form id="onboardingForm">
+        <label>What should we call your household?<input name="household" required maxlength="60" value="My household" autocomplete="organization"></label>
+        <div class="form-row">
+          <label>Currency<select name="currency"><option value="PKR">PKR — Pakistani rupee</option><option value="USD">USD — US dollar</option><option value="GBP">GBP — Pound sterling</option><option value="EUR">EUR — Euro</option></select></label>
+          <label>Language<select name="language"><option value="en">English</option><option value="ur" disabled>Urdu (coming later)</option></select></label>
+        </div>
+        <button class="primary wide" type="submit">Start my fresh loop <span>→</span></button>
+      </form>
+      <p class="privacy-note"><span>⌁</span> Your data stays in this browser. No account or external service is used. Clearing browser data removes it.</p>
+    </div>
+  </section>
+
+  <div id="app" class="app-shell" hidden>
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark">F</span><span>FreshLoop</span></div>
+      <nav aria-label="Main navigation">
+        <button class="nav-item active" data-view="dashboard"><span>⌂</span> Today</button>
+        <button class="nav-item" data-view="inventory"><span>▦</span> Inventory <b id="navInventoryCount">0</b></button>
+        <button class="nav-item" data-view="shopping"><span>✓</span> Shopping list <b id="navShoppingCount">0</b></button>
+      </nav>
+      <div class="side-bottom">
+        <button class="nav-item" data-view="settings"><span>⚙</span> Settings</button>
+        <div class="local-pill"><i></i><div><strong>Private local mode</strong><small>Saved on this device</small></div></div>
+      </div>
+    </aside>
+
+    <header class="mobile-header"><div class="brand"><span class="brand-mark">F</span><span>FreshLoop</span></div><button id="mobileAdd" class="icon-btn" aria-label="Add food">＋</button></header>
+
+    <main id="main" tabindex="-1">
+      <section id="dashboardView" class="view">
+        <header class="page-header"><div><p class="eyebrow" id="todayDate"></p><h1>Good morning.</h1><p>Here’s what could use a little attention today.</p></div><button class="primary add-food">＋ Add food</button></header>
+        <div class="hero-grid">
+          <article class="use-card"><div><p class="eyebrow pale">USE NEXT</p><h2 id="heroTitle">Your kitchen is clear</h2><p id="heroMeta">Add dated items to see what to use first.</p><button class="light-btn" data-view-target="inventory">View inventory <span>→</span></button></div><div class="produce-art" aria-hidden="true">◒<span>✦</span></div></article>
+          <article class="stat-card"><span class="stat-icon">♻</span><div><strong id="consumedStat">0</strong><p>items used this month</p></div><small id="savedStat">A thoughtful start</small></article>
+        </div>
+        <section class="section-block"><div class="section-heading"><div><p class="eyebrow">PRIORITY</p><h2>Use soon</h2></div><button class="text-btn" data-view-target="inventory">See all <span>→</span></button></div><div id="useSoonList" class="food-grid"></div></section>
+        <section class="section-block split"><article class="summary-panel"><div class="section-heading"><div><p class="eyebrow">AT A GLANCE</p><h2>Your kitchen</h2></div></div><div id="kitchenStats" class="kitchen-stats"></div></article><article class="tip-panel"><span>✣</span><div><p class="eyebrow">A SMALL NUDGE</p><h3>Shop your kitchen first.</h3><p>Check what you already have before adding to your list. The simplest savings start at home.</p></div></article></section>
+      </section>
+
+      <section id="inventoryView" class="view" hidden>
+        <header class="page-header"><div><p class="eyebrow">YOUR KITCHEN</p><h1>Inventory</h1><p>Everything in your fridge, freezer, and pantry.</p></div><button class="primary add-food">＋ Add food</button></header>
+        <div class="toolbar"><label class="search"><span>⌕</span><input id="inventorySearch" type="search" placeholder="Search name, brand, or category" aria-label="Search inventory"></label><label><span class="sr-only">Filter by location</span><select id="locationFilter"><option value="">All locations</option></select></label><label><span class="sr-only">Filter by status</span><select id="statusFilter"><option value="available">Available</option><option value="">All statuses</option><option value="consumed">Consumed</option><option value="discarded">Discarded</option></select></label></div>
+        <div id="inventoryList" class="inventory-list"></div>
+      </section>
+
+      <section id="shoppingView" class="view" hidden>
+        <header class="page-header"><div><p class="eyebrow">PLAN WITH INTENTION</p><h1>Shopping list</h1><p>See what is already at home before you buy.</p></div></header>
+        <form id="shoppingForm" class="quick-add"><label class="sr-only" for="shoppingName">Item name</label><input id="shoppingName" name="name" required maxlength="80" placeholder="What do you need?"><label class="sr-only" for="shoppingQty">Quantity</label><input id="shoppingQty" name="quantity" maxlength="24" placeholder="Qty (optional)"><button class="primary" type="submit">Add item</button></form>
+        <div id="shoppingList" class="shopping-list"></div>
+      </section>
+
+      <section id="settingsView" class="view" hidden>
+        <header class="page-header"><div><p class="eyebrow">LOCAL MODE</p><h1>Settings & privacy</h1><p>Control your household data and preferences.</p></div></header>
+        <div class="settings-grid"><article class="settings-card"><h2>Household</h2><label>Name<input id="householdName" maxlength="60"></label><label>Currency<select id="currencySetting"><option>PKR</option><option>USD</option><option>GBP</option><option>EUR</option></select></label><button id="saveSettings" class="secondary">Save settings</button></article><article class="settings-card"><h2>Your data</h2><p>FreshLoop stores data in this browser only. Export a portable JSON copy or erase everything on this device.</p><div class="button-row"><button id="exportData" class="secondary">Export data</button><button id="deleteData" class="danger">Delete local data</button></div></article><article class="settings-card safety"><h2>Food date reminder</h2><p>Dates are planning aids, not safety guarantees. “Best before” usually concerns quality; follow packaging and authoritative local guidance. When in doubt, seek qualified advice.</p></article></div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Mobile navigation"><button class="nav-item active" data-view="dashboard"><span>⌂</span><small>Today</small></button><button class="nav-item" data-view="inventory"><span>▦</span><small>Inventory</small></button><button class="nav-add add-food" aria-label="Add food">＋</button><button class="nav-item" data-view="shopping"><span>✓</span><small>Shopping</small></button><button class="nav-item" data-view="settings"><span>⚙</span><small>Settings</small></button></nav>
+  </div>
+
+  <dialog id="itemDialog"><form id="itemForm" method="dialog"><div class="dialog-head"><div><p class="eyebrow">INVENTORY ITEM</p><h2 id="itemDialogTitle">Add food</h2></div><button class="close-btn" value="cancel" formnovalidate aria-label="Close">×</button></div><input type="hidden" name="id"><div class="form-grid"><label class="span-2">Item name<input name="name" required maxlength="100" placeholder="e.g. Spinach"></label><label>Brand (optional)<input name="brand" maxlength="80"></label><label>Category<select name="category"></select></label><label>Quantity<input name="quantity" type="number" min="0" step="0.001" inputmode="decimal" placeholder="Unknown"></label><label>Unit<select name="unit"></select></label><label>Storage location<select name="location"></select></label><label>Date<input name="date" type="date"></label><label>Date type<select name="dateType"><option value="best-before">Best before</option><option value="use-by">Use by</option><option value="expiry">Expiry</option><option value="other">Other</option></select></label><fieldset class="span-2"><legend>Date source</legend><label class="radio"><input type="radio" name="dateSource" value="entered" checked> User-entered</label><label class="radio"><input type="radio" name="dateSource" value="estimated"> Estimated</label></fieldset><label class="span-2">Notes (optional)<textarea name="notes" rows="3" maxlength="500"></textarea></label></div><div class="dialog-actions"><button class="secondary" value="cancel" formnovalidate>Cancel</button><button class="primary" value="save">Save item</button></div></form></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
